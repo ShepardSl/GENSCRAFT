@@ -208,7 +208,16 @@
         <!-- We use the same ID as the hero section's play button to reuse the popup logic -->
         <div class="showcase__video-frame-wrap" id="btnPlayVideoShowcase" role="button" tabindex="0" aria-label="Смотреть видео">
           <!-- The iframe is set to autoplay with mute to serve as an animated preview -->
-          <iframe class="showcase__video-iframe" width="560" height="315" src="https://www.youtube.com/embed/I1KXdUwulKQ?si=r2SdHZzC4DVh2TmC&autoplay=1&mute=1&loop=1&playlist=I1KXdUwulKQ&controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>
+          <iframe class="showcase__video-iframe" width="560" height="315" src="https://www.youtube.com/embed/I1KXdUwulKQ?si=r2SdHZzC4DVh2TmC&autoplay=1&mute=1&loop=1&playlist=I1KXdUwulKQ&controls=0&vq=hd1080" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>
+          
+          <div class="showcase__video-overlay" aria-hidden="true">
+            <div class="showcase__play-btn">
+              <svg width="60" height="60" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M44 32L20 45.8564V18.1436L44 32Z" fill="white" fill-opacity="0.9"/>
+              </svg>
+            </div>
+          </div>
+
           <img src="./assets/img/stroke-video.png" alt="" class="showcase__video-frame" aria-hidden="true" loading="lazy">
         </div>
       </div>

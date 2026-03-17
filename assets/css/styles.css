@@ -1050,8 +1050,48 @@ p+p {
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+  z-index: 4;
+  /* Sits on top of everything */
+}
+
+/* Darkened overlay for the video preview */
+.showcase__video-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 6.5%);
+  height: calc(100% - 4%);
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 2;
-  /* Sits on top of the future video */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  pointer-events: none;
+}
+
+.showcase__video-frame-wrap:hover .showcase__video-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.showcase__play-btn {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 3;
+}
+
+.showcase__play-btn svg {
+  width: 100%;
+  height: auto;
+}
+
+.showcase__video-frame-wrap:hover .showcase__play-btn {
+  transform: scale(1.15);
 }
 
 .showcase__actions {

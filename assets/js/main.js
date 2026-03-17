@@ -151,7 +151,7 @@ function initVideoModal() {
   if (showcaseVideoBtn) {
     showcaseVideoBtn.addEventListener('click', () => {
       triggerBtn = showcaseVideoBtn;
-      iframe.src = `https://www.youtube.com/embed/I1KXdUwulKQ?autoplay=1`;
+      iframe.src = `https://www.youtube.com/embed/I1KXdUwulKQ?autoplay=1&vq=hd1080`;
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
