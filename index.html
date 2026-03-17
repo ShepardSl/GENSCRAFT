@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ANOMA — STALKER MMO</title>
+  <meta name="description"
+    content="ANOMA — это MMORPG в сеттинге STALKER с элементами выживания, открытым миром и 'экстракшен'-геймплеем.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://anoma.su/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ANOMA — STALKER MMO">
+  <meta property="og:description"
+    content="ANOMA — это MMORPG в сеттинге STALKER с элементами выживания, открытым миром и экстракшен-геймплеем.">
+  <meta property="og:url" content="https://anoma.su/">
+  <meta property="og:image" content="https://anoma.su/assets/img/og-cover.webp">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="ANOMA">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ANOMA — STALKER MMO">
+  <meta name="twitter:description"
+    content="ANOMA — это MMORPG в сеттинге STALKER с элементами выживания, открытым миром и экстракшен-геймплеем.">
+  <meta name="twitter:image" content="https://anoma.su/assets/img/og-cover.webp">
+
+  <link rel="icon" href="./assets/img/favicon.ico" sizes="any">
+  <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;900&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "ANOMA",
+        "url": "https://anoma.su/"
+      },
+      {
+        "@type": "Organization",
+        "name": "ANOMA",
+        "url": "https://anoma.su/",
+        "logo": "https://anoma.su/assets/img/logo.png",
+        "sameAs": [
+          "https://discord.com/invite/6MUMWm6wPn",
+          "https://vk.com/anoma_ufo",
+          "https://www.youtube.com/@anoma_ufo",
+          "https://t.me/anoma_ufo"
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+
+<body>
+
+  <header class="desktop-header" aria-label="Шапка сайта">
+    <div class="desktop-header__inner">
+      <div class="desktop-header__socials">
+        <a href="https://discord.com/invite/6MUMWm6wPn" class="header__social-link" aria-label="Discord" target="_blank" rel="noopener">
+          <img src="./assets/img/discord.svg" alt="Discord" width="24" height="24">
+        </a>
+        <a href="https://vk.com/anoma_ufo" class="header__social-link" aria-label="VK" target="_blank" rel="noopener">
+          <img src="./assets/img/vk.svg" alt="VK" width="24" height="24">
+        </a>
+        <a href="https://www.youtube.com/@anoma_ufo" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener">
+          <img src="./assets/img/youtube.svg" alt="YouTube" width="24" height="24">
+        </a>
+        <a href="https://t.me/anoma_ufo" class="header__social-link" aria-label="Telegram" target="_blank" rel="noopener">
+          <img src="./assets/img/telegram.svg" alt="Telegram" width="24" height="24">
+        </a>
+      </div>
+      
+      <div class="desktop-header__server">
+        <span class="desktop-header__ip-label">IP:</span> 
+        <div class="desktop-header__copy-group" id="btnCopyIp" role="button" tabindex="0" aria-label="Скопировать IP">
+          <span class="desktop-header__ip-value" id="serverIpStr">PLAY.GENSCRAFT</span>
+          <img src="./assets/img/copy.svg" alt="" width="20" height="20" aria-hidden="true" class="desktop-header__copy-icon">
+          <span class="desktop-header__tooltip">Скопировано!</span>
+        </div>
+        <span class="desktop-header__version">Версия 1.21-1.21.4</span>
+      </div>
+
+      <button class="desktop-header__donate" aria-label="Пополнить донат-валюту">
+        <span class="desktop-header__donate-text">Пополнить донат-валюту</span>
+        <img src="./assets/img/crystal.svg" alt="" class="desktop-header__donate-icon" aria-hidden="true">
+      </button>
+    </div>
+  </header>
+
+  <svg class="sr-only" aria-hidden="true">
+    <defs>
+
+      <filter id="tile-distort">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
+        <feDisplacementMap id="tile-displacement" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R"
+          yChannelSelector="G" />
+      </filter>
+      <mask id="video-mask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"
+        style="mask-type: luminance;">
+        <image href="./assets/img/mask-video.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+      </mask>
+      <mask id="tile-mask-1" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"
+        style="mask-type: luminance;">
+        <image href="./assets/img/image-1-mask.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+      </mask>
+      <mask id="tile-mask-2" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"
+        style="mask-type: luminance;">
+        <image href="./assets/img/image-2-mask.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+      </mask>
+      <mask id="tile-mask-3" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"
+        style="mask-type: luminance;">
+        <image href="./assets/img/image-3-mask.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+      </mask>
+    </defs>
+  </svg>
+
+
+  <main>
+    <section class="hero" id="hero" aria-label="Главный экран">
+      <img class="hero__image" src="./assets/img/hero-image.png" alt="" aria-hidden="true" fetchpriority="high">
+      <img class="hero__character" src="./assets/img/character.png" alt="" aria-hidden="true">
+      <div class="hero__content">
+        <h1 class="hero__title">
+          <span class="sr-only">ANOMA — STALKER MMO</span>
+          <img class="hero__logo" src="./assets/img/logo.png" alt="">
+          <span class="hero__subtitle">ГЕНШИН<br>В МАЙНКРАФТ</span>
+        </h1>
+        <button id="btnOpenPrereg" class="hero__cta" aria-label="Открыть окно предрегистрации">
+          <img class="hero__cta-default" src="./assets/img/btn-default.svg" alt="">
+          <img class="hero__cta-hover" src="./assets/img/btn-hover.svg" alt="">
+          <span class="hero__cta-text">ПОЛУЧИТЬ ПРОХОДКУ</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="about" id="about" aria-label="Разработка игры">
+      <div class="about__container">
+        
+        <div class="about__cards-grid">
+          <div class="about__card-placeholder" aria-hidden="true"></div>
+          <div class="about__card-placeholder" aria-hidden="true"></div>
+          <div class="about__card-placeholder" aria-hidden="true"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section section--features" id="features" aria-label="Особенности">
+      <div class="features__bg">
+        <h2 class="sr-only">Особенности игры</h2>
+        <div class="features__container">
+          <div class="features__grid">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScsadZz_5GCUrAZubNEpT86fGNEL5uBbUMrf_bMq-caXoN56w/viewform"
+              target="_blank" rel="noopener noreferrer" class="features__tile features__tile--large">
+              <img src="./assets/img/image-1.png" alt="" class="features__tile-img" loading="lazy">
+              <div class="features__content">
+                <div class="features__title-wrap">
+                  <h3 class="features__title">Набор в команду</h3>
+                  <img src="./assets/img/external-link.svg" alt="Внешняя ссылка" class="features__icon" width="24"
+                    height="24">
+                </div>
+                <p class="features__desc">
+                  Ищем единомышленников в команду <br class="br-mobile"> ANOMA, вдохновлённых сеттингом сталкера.
+                </p>
+              </div>
+            </a>
+            <div class="features__col">
+              <a href="https://discord.com/invite/6MUMWm6wPn" target="_blank" rel="noopener noreferrer"
+                class="features__tile features__tile--small">
+                <img src="./assets/img/image-2.png" alt="" class="features__tile-img" loading="lazy">
+                <div class="features__content">
+                  <div class="features__title-wrap">
+                    <h3 class="features__title">ОБЩЕНИЕ С РАЗРАБОТЧИКАМИ</h3>
+                    <img src="./assets/img/discord.svg" alt="Discord"
+                      class="features__icon features__icon--social features__icon--discord" width="20" height="20">
+                  </div>
+                  <p class="features__desc">
+                    В нашем Discord мы отвечаем на вопросы и часто просим <br>обратную связь, чтобы сделать игру лучше.
+                  </p>
+                </div>
+              </a>
+              <a href="https://t.me/anoma_ufo" target="_blank" rel="noopener noreferrer"
+                class="features__tile features__tile--small">
+                <img src="./assets/img/image-3.png" alt="" class="features__tile-img" loading="lazy">
+                <div class="features__content">
+                  <div class="features__title-wrap">
+                    <h3 class="features__title">НОВОСТИ И ОБНОВЛЕНИЯ</h3>
+                    <img src="./assets/img/telegram.svg" alt="Telegram"
+                      class="features__icon features__icon--social features__icon--telegram" width="20" height="20">
+                  </div>
+                  <p class="features__desc">
+                    Подпишись на Telegram, чтобы следить за прогрессом разработки <br>и анонсами.
+                  </p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--world" id="world" aria-label="Мир игры">
+      <div class="world__bg">
+        <video class="world__bg-video" autoplay loop muted playsinline poster="./assets/img/world-poster.webp">
+          <source src="./assets/img/bg-dialog.webm" type="video/webm">
+        </video>
+        <img src="./assets/img/bg-mask.png" alt="" class="world__bg-img" aria-hidden="true">
+        <div class="world__content container">
+          <div class="world__text-layer">
+            <h2 class="world__title">МЫ КОМАНДА ЭНТУЗИАСТОВ</h2>
+            <p class="world__desc">
+              Мы собрались вокруг одной идеи, создать онлайн игру мечты, в которую приятно играть <br>
+              и нам самим. У нас нет инвесторов, только мы и ваша поддержка.
+            </p>
+          </div>
+
+          <div class="world__team-marquee">
+            <div class="world__team-track">
+              <div class="world__team-group">
+                <img src="./assets/img/team/nick1.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick2.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick3.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick9.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick5.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick6.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick7.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick8.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick4.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick10.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick11.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick12.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick13.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick14.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+              </div>
+              <div class="world__team-group world__team-group--clone" aria-hidden="true">
+                <img src="./assets/img/team/nick1.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick2.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick3.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick9.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick5.png" alt="" class="world__team-badge" loading="lazy" width="120"
+                  height="40">
+                <img src="./assets/img/team/nick6.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick7.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick8.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick4.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick10.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick11.png" alt="" class="world__team-badge world__team-badge--op-54"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick12.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick13.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+                <img src="./assets/img/team/nick14.png" alt="" class="world__team-badge world__team-badge--op-32"
+                  loading="lazy" width="120" height="40">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="container footer__inner">
+      <div class="footer__socials">
+        <span class="footer__socials-text">Следи за разработкой:</span>
+        <a href="https://discord.com/invite/6MUMWm6wPn" class="footer__socials-link" aria-label="Discord"
+          target="_blank" rel="noopener">
+          <img src="./assets/img/discord.svg" alt="Discord" width="24" height="24">
+        </a>
+        <a href="https://vk.com/anoma_ufo" class="footer__socials-link" aria-label="VK" target="_blank" rel="noopener">
+          <img src="./assets/img/vk.svg" alt="VK" width="24" height="24">
+        </a>
+        <a href="https://www.youtube.com/@anoma_ufo" class="footer__socials-link" aria-label="YouTube" target="_blank"
+          rel="noopener">
+          <img src="./assets/img/youtube.svg" alt="YouTube" width="24" height="24">
+        </a>
+        <a href="https://t.me/anoma_ufo" class="footer__socials-link" aria-label="Telegram" target="_blank"
+          rel="noopener">
+          <img src="./assets/img/telegram.svg" alt="Telegram" width="24" height="24">
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Видео плеер" aria-hidden="true">
+    <div class="video-modal__overlay"></div>
+    <div class="video-modal__content" tabindex="-1">
+      <button class="video-modal__close" aria-label="Закрыть">&times;</button>
+      <div class="video-modal__iframe-wrap">
+        <iframe class="video-modal__iframe" id="videoIframe" allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="prereg-modal" id="preregModal" role="dialog" aria-modal="true" aria-hidden="true"
+    aria-labelledby="preregTitle">
+    <div class="prereg-modal__overlay"></div>
+    <div class="prereg-modal__content" tabindex="-1">
+      <button class="prereg-modal__close" aria-label="Закрыть">&times;</button>
+      <img src="./assets/img/popup.png" alt="" class="prereg-modal__bg" aria-hidden="true" loading="lazy">
+      <div class="prereg-modal__inner">
+        <h2 id="preregTitle" class="prereg-modal__title">МЫ УЖЕ ГРЕЕМ СЕРВЕРА ;)</h2>
+        <p class="prereg-modal__desc">Предрегистрации пока нет. Мы сообщим о раннем доступе в <br>соцсетях и ты первым
+          залутаешь свой ник!</p>
+        <div class="prereg-modal__socials">
+          <a href="https://discord.com/invite/6MUMWm6wPn" class="prereg-modal__social-link" aria-label="Discord"
+            target="_blank" rel="noopener">
+            <img src="./assets/img/discord.svg" alt="Discord" width="24" height="24">
+          </a>
+          <a href="https://vk.com/anoma_ufo" class="prereg-modal__social-link" aria-label="VK" target="_blank"
+            rel="noopener">
+            <img src="./assets/img/vk.svg" alt="VK" width="24" height="24">
+          </a>
+          <a href="https://www.youtube.com/@anoma_ufo" class="prereg-modal__social-link" aria-label="YouTube"
+            target="_blank" rel="noopener">
+            <img src="./assets/img/youtube.svg" alt="YouTube" width="24" height="24">
+          </a>
+          <a href="https://t.me/anoma_ufo" class="prereg-modal__social-link" aria-label="Telegram" target="_blank"
+            rel="noopener">
+            <img src="./assets/img/telegram.svg" alt="Telegram" width="24" height="24">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/js/main.js" defer></script>
+
+  <div class="sidor-easter-egg" id="sidorEasterEgg" aria-hidden="true">
+    <img src="./assets/img/sidor.png" alt="" width="64" height="64" loading="lazy">
+  </div>
+</body>
+
+</html>
