@@ -1,60 +1,161 @@
 
-
 'use strict';
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.addEventListener('DOMContentLoaded', () => {
-  initSmoothScroll();
-  initVideoModal();
-  initPreregModal();
-  initCopyIpButton();
+  // Initialize Donat/Payment modal
+  initModal('donationModal', ['.desktop-header__donate', '.showcase__actions .showcase__btn--secondary', '.hero__actions .hero__cta--secondary']);
+  
+  // Initialize Entry/Pass modal
+  initModal('passModal', ['#btnOpenPrereg', '.showcase__actions .showcase__btn--main']);
 
-  if (!prefersReducedMotion) {
-    initMagicalCursor();
-  }
+  initHeader();
+  initCopyIpButton();
+  initVideoModal();
+  initMagicalCursor();
+  initSmoothScroll();
+  initScrollReveal();
 });
+
+/**
+ * Magical scroll reveal for about cards
+ */
+function initScrollReveal() {
+  const cards = document.querySelectorAll('.about__card');
+  if (cards.length === 0) return;
+
+  const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        // Find index of card in the grid to calculate delay
+        const cardArray = Array.from(cards);
+        const index = cardArray.indexOf(entry.target);
+        entry.target.style.transitionDelay = `${index * 0.2}s`;
+        
+        entry.target.classList.add('is-revealed');
+        // Stop observing once revealed
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  cards.forEach(card => observer.observe(card));
+}
+
+/**
+ * Initializes a modal with its opening buttons and internal logic
+ */
+function initModal(modalId, openSelectors) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+
+  const content = modal.querySelector('.prereg-modal__content');
+  const overlay = modal.querySelector('.prereg-modal__overlay');
+  const closeBtn = modal.querySelector('.prereg-modal__close');
+
+  const openButtons = [];
+  openSelectors.forEach(selector => {
+    const btns = document.querySelectorAll(selector);
+    btns.forEach(btn => openButtons.push(btn));
+  });
+
+  function openModal() {
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (content) content.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (overlay) overlay.addEventListener('click', closeModal);
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+
+  // Payment method selection
+  const paymentMethods = modal.querySelectorAll('.payment-method');
+  paymentMethods.forEach(method => {
+    method.addEventListener('click', () => {
+      paymentMethods.forEach(m => m.classList.remove('is-active'));
+      method.classList.add('is-active');
+      const radio = method.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+    });
+  });
+
+  // Dynamic RUB suffix positioning logic removed to pin it to the right via CSS
+  const amountInput = modal.querySelector('.donation-form__input--amount');
+  const currencySpan = modal.querySelector('.donation-form__currency');
+
+  if (amountInput && currencySpan) {
+    const updateCurrencyVisibility = () => {
+      currencySpan.style.display = amountInput.value ? 'block' : 'none';
+    };
+
+    amountInput.addEventListener('input', updateCurrencyVisibility);
+    updateCurrencyVisibility();
+  }
+}
+
+function initHeader() {
+  const header = document.querySelector('.desktop-header');
+  if (!header) return;
+
+  const handleScroll = () => {
+    if (window.scrollY > 20) {
+      header.classList.add('is-scrolled');
+    } else {
+      header.classList.remove('is-scrolled');
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  handleScroll();
+}
 
 function initVideoModal() {
   const modal = document.getElementById('videoModal');
   const iframe = document.getElementById('videoIframe');
   if (!modal || !iframe) return;
   const content = modal.querySelector('.video-modal__content');
-  if (!content) return;
 
   const overlay = modal.querySelector('.video-modal__overlay');
   const closeBtn = modal.querySelector('.video-modal__close');
   let triggerBtn = null;
 
-  document.querySelectorAll('.about__video-overlay').forEach(btn => {
-    btn.addEventListener('click', () => {
-      triggerBtn = btn;
-      const container = btn.closest('.about__video');
-      const videoId = container.dataset.videoId;
-      const start = container.dataset.videoStart || 0;
-      iframe.src = `https://www.youtube.com/embed/${videoId}?si=u-pcf_sWomP55a6B&autoplay=1&start=${start}`;
 
-      modal.classList.add('is-open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
 
-      content.focus();
-    });
-  });
-
-  // Attach popup logic for the new showcase video frame
   const showcaseVideoBtn = document.getElementById('btnPlayVideoShowcase');
   if (showcaseVideoBtn) {
     showcaseVideoBtn.addEventListener('click', () => {
       triggerBtn = showcaseVideoBtn;
-      // Using the exact parameters the user provided for the showcase video popup
-      iframe.src = `https://www.youtube.com/embed/I1KXdUwulKQ?si=r2SdHZzC4DVh2TmC&autoplay=1`;
-
+      iframe.src = `https://www.youtube.com/embed/I1KXdUwulKQ?autoplay=1`;
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-
-      content.focus();
+      if (content) content.focus();
     });
   }
 
@@ -63,51 +164,14 @@ function initVideoModal() {
     modal.setAttribute('aria-hidden', 'true');
     iframe.src = '';
     document.body.style.overflow = '';
-
     if (triggerBtn) {
       triggerBtn.focus();
       triggerBtn = null;
     }
   }
 
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('is-open')) {
-      closeModal();
-    }
-  });
-}
-
-function initPreregModal() {
-  const modal = document.getElementById('preregModal');
-  if (!modal) return;
-  const openBtn = document.getElementById('btnOpenPrereg');
-  const content = modal.querySelector('.prereg-modal__content');
-  if (!openBtn || !content) return;
-
-  const overlay = modal.querySelector('.prereg-modal__overlay');
-  const closeBtn = modal.querySelector('.prereg-modal__close');
-
-  openBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-
-    content.focus();
-  });
-
-  function closeModal() {
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-
-    openBtn.focus();
-  }
-
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (overlay) overlay.addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) {
       closeModal();
@@ -116,129 +180,75 @@ function initPreregModal() {
 }
 
 function initCopyIpButton() {
-  const copyGroup = document.getElementById('btnCopyIp');
+  const copyBtns = [
+    { container: document.getElementById('btnCopyIp'), value: '.desktop-header__ip-value', tooltip: '.desktop-header__tooltip' },
+    { container: document.getElementById('btnCopyIpFooter'), value: '.footer__info-ip', tooltip: '.footer__tooltip' },
+    { container: document.getElementById('btnCopyIpMobile'), value: '.desktop-header__ip-value', tooltip: '.desktop-header__tooltip' }
+  ];
 
-  if (copyGroup) {
-    const ipValue = copyGroup.querySelector('.desktop-header__ip-value');
-    const tooltip = copyGroup.querySelector('.desktop-header__tooltip');
-    
-    if (ipValue && tooltip) {
-      copyGroup.addEventListener('click', async () => {
+  copyBtns.forEach(({ container, value, tooltip }) => {
+    if (!container) return;
+    const ipValue = container.querySelector(value);
+    const tooltipEl = container.querySelector(tooltip);
+
+    if (ipValue && tooltipEl) {
+      container.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(ipValue.textContent.trim());
-          tooltip.classList.add('is-active');
-          setTimeout(() => {
-            tooltip.classList.remove('is-active');
-          }, 2000);
+          tooltipEl.classList.add('is-active');
+          setTimeout(() => tooltipEl.classList.remove('is-active'), 2000);
         } catch (err) {
           console.error('Failed to copy: ', err);
         }
       });
     }
-  }
-
-  const copyFooterGroup = document.getElementById('btnCopyIpFooter');
-
-  if (copyFooterGroup) {
-    const footerIpValue = copyFooterGroup.querySelector('.footer__info-ip');
-    const footerTooltip = copyFooterGroup.querySelector('.footer__tooltip');
-    
-    if (footerIpValue && footerTooltip) {
-      copyFooterGroup.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(footerIpValue.textContent.trim());
-          footerTooltip.classList.add('is-active');
-          setTimeout(() => {
-            footerTooltip.classList.remove('is-active');
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy: ', err);
-        }
-      });
-    }
-  }
+  });
 }
 
 function initMagicalCursor() {
-  if ('ontouchstart' in window) return;
+  if ('ontouchstart' in window || prefersReducedMotion) return;
 
   const chars = ['✦', '✧', '★'];
   const colors = ['#FFF2B2', '#FFFFFF', '#DFDCBD'];
-
-  let currentX = -100;
-  let currentY = -100;
-  let isMouseMoving = false;
-  let idleTimer;
-  let lastTime = 0;
+  let currentX = -100, currentY = -100, isMouseMoving = false, lastTime = 0;
 
   function spawnSparkle(x, y) {
     const sparkle = document.createElement('span');
     sparkle.className = 'magical-sparkle';
     sparkle.textContent = chars[Math.floor(Math.random() * chars.length)];
     sparkle.style.color = colors[Math.floor(Math.random() * colors.length)];
-    
-    const offsetX = (Math.random() - 0.5) * 20;
-    const offsetY = (Math.random() - 0.5) * 20;
-
-    sparkle.style.left = (x + offsetX) + 'px';
-    sparkle.style.top = (y + offsetY) + 'px';
-
+    sparkle.style.left = (x + (Math.random() - 0.5) * 20) + 'px';
+    sparkle.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
     document.body.appendChild(sparkle);
-
-    setTimeout(() => {
-      if(sparkle.parentNode) sparkle.remove();
-    }, 1000);
+    setTimeout(() => sparkle.remove(), 1000);
   }
 
   document.addEventListener('mousemove', (e) => {
-    currentX = e.pageX;
-    currentY = e.pageY;
-
+    currentX = e.pageX; currentY = e.pageY;
     isMouseMoving = true;
-    clearTimeout(idleTimer);
-
-    idleTimer = setTimeout(() => {
-      isMouseMoving = false;
-    }, 100);
-
     const now = Date.now();
     if (now - lastTime < 30) return;
     lastTime = now;
-
     spawnSparkle(currentX, currentY);
+    setTimeout(() => { isMouseMoving = false; }, 100);
   });
 
   setInterval(() => {
-    if (!isMouseMoving && currentX !== -100) {
-      spawnSparkle(currentX, currentY);
-    }
+    if (!isMouseMoving && currentX !== -100) spawnSparkle(currentX, currentY);
   }, 250);
 }
 
-
 function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       const targetId = link.getAttribute('href');
       if (targetId === '#') return;
-
       const target = document.querySelector(targetId);
       if (!target) return;
-
       e.preventDefault();
-
-      const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth',
-      });
-
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' });
       target.setAttribute('tabindex', '-1');
       target.focus({ preventScroll: true });
     });
   });
 }
-
-
-
