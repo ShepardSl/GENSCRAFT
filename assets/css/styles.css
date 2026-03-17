@@ -85,6 +85,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -96,7 +97,6 @@ body {
   background-color: var(--clr-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 img,
@@ -161,6 +161,28 @@ button {
   opacity: 1;
 }
 
+/* Cursor sparkles */
+.magical-sparkle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 14px;
+  user-select: none;
+  animation: sparkle-fade 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sparkle-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+}
+
 h1,
 h2,
 h3,
@@ -194,6 +216,12 @@ p+p {
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--container-padding);
+}
+
+.footer>.container {
+  height: 100%;
+  padding-inline: 0;
+  max-width: 1200px;
 }
 
 .section {
@@ -404,9 +432,11 @@ p+p {
     background-size: cover;
     padding: 0 16px;
   }
+
   .desktop-header__socials {
     padding-left: 16px;
   }
+
   .desktop-header__donate {
     padding-right: 0;
   }
@@ -545,8 +575,33 @@ p+p {
 }
 
 .about {
+  position: relative;
+  z-index: 10;
   margin-top: 80px;
+}
 
+.about::before,
+.about::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  /* Center relative to the section */
+  width: 688px;
+  height: 688px;
+  /* Assuming it's roughly square, adjust if needed */
+  background: url('../img/ornaments.svg') center / contain no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.about::before {
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.about::after {
+  right: 0;
+  transform: translateY(-50%) scaleX(-1);
 }
 
 .about__container {
@@ -565,12 +620,286 @@ p+p {
   width: 100%;
 }
 
-.about__card-placeholder {
+.about__card {
+  --cutout-radius: 48px;
+  position: relative;
   width: 100%;
   height: 452px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+  background-color: #E2E4E9;
+  /* Top-right cutout for the whole card */
+  -webkit-mask-image: radial-gradient(circle var(--cutout-radius) at 100% 0, transparent var(--cutout-radius), black calc(var(--cutout-radius) + 0.5px));
+  mask-image: radial-gradient(circle var(--cutout-radius) at 100% 0, transparent var(--cutout-radius), black calc(var(--cutout-radius) + 0.5px));
 }
+
+.about__card-bg-top {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  height: calc(50% - 1px);
+  background-color: #ffffff;
+  /* Top-right cutout for the top white half, with larger radius and offset mask center to preserve 1px border */
+  -webkit-mask-image: radial-gradient(circle calc(var(--cutout-radius) + 1px) at calc(100% + 1px) -1px, transparent calc(var(--cutout-radius) + 1px), black calc(var(--cutout-radius) + 1.5px));
+  mask-image: radial-gradient(circle calc(var(--cutout-radius) + 1px) at calc(100% + 1px) -1px, transparent calc(var(--cutout-radius) + 1px), black calc(var(--cutout-radius) + 1.5px));
+  pointer-events: none;
+}
+
+.about__card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.about__card-image-wrap {
+  height: 50%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* Matching the inner white background mask */
+  -webkit-mask-image: radial-gradient(circle calc(var(--cutout-radius) + 1px) at calc(100% + 1px) -1px, transparent calc(var(--cutout-radius) + 1px), black calc(var(--cutout-radius) + 1.5px));
+  mask-image: radial-gradient(circle calc(var(--cutout-radius) + 1px) at calc(100% + 1px) -1px, transparent calc(var(--cutout-radius) + 1px), black calc(var(--cutout-radius) + 1.5px));
+}
+
+/* Draw the 4px borders on the wrapper */
+.about__card-image-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+
+  /* Draw the top, left, and right straight borders. No bottom border needed. */
+  box-shadow: inset 4px 4px 0 0 #E2E4E9, inset -4px 0 0 0 #E2E4E9;
+
+  /* Draw the curved border precisely around the top-right cutout using a radial gradient.
+     The parent wrapper's mask cuts out everything inside (radius + 1px), 
+     so we draw the border right at the edge from (radius + 1px) up to (radius + 5px) for a 4px thickness. */
+  background-image: radial-gradient(circle at calc(100% + 1px) -1px,
+      transparent calc(var(--cutout-radius) + 1px),
+      #E2E4E9 calc(var(--cutout-radius) + 1.2px),
+      #E2E4E9 calc(var(--cutout-radius) + 5px),
+      transparent calc(var(--cutout-radius) + 5.5px));
+}
+
+.about__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.3);
+}
+
+.about__card:nth-child(1) .about__card-image {
+  /* Increase first image scale by another 20% on top of 1.3 */
+  transform: scale(1.5);
+}
+
+.about__card:nth-child(2) .about__card-image {
+  /* Shift focal point to the absolute left edge */
+  transform: scale(1.4);
+  object-position: left center;
+  transform-origin: left center;
+}
+
+.about__card-text {
+  height: 50%;
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.about__card-title {
+  font-family: var(--ff-heading);
+  font-size: 24px;
+  line-height: 32px;
+  color: #40434F;
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+.about__card-desc {
+  font-family: var(--ff-comfortaa);
+  font-size: 16px;
+  line-height: 24px;
+  color: #40434F;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════
+   Showcase Section (Third Block)
+   ═══════════════════════════════════════════ */
+
+.showcase {
+  position: relative;
+  width: 100%;
+  background: url('../img/render-bg.png') center / cover no-repeat;
+  padding-top: 300px;
+  padding-bottom: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  /* Prevent the large radial glow from expanding the document bounds */
+  overflow: hidden;
+}
+
+.showcase__title {
+  font-family: var(--ff-heading);
+  font-size: 56px;
+  line-height: 72px;
+  color: #FFFFFF;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 2;
+  /* Ensure title sits above the glow */
+}
+
+.showcase__video-area {
+  position: relative;
+  width: 100%;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+  padding-inline: 24px;
+}
+
+/* The radial glow effect behind the video and title */
+.showcase__video-area::before {
+  content: "";
+  position: absolute;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 1500px;
+  height: calc(100% + 300px);
+  background: radial-gradient(ellipse at center, rgba(99, 165, 243, 0.95) 0%, rgba(99, 165, 243, 0.5) 40%, rgba(99, 165, 243, 0) 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.showcase__video-frame-wrap {
+  position: relative;
+  /* Fixed width as requested by user */
+  width: 100%;
+  max-width: 840px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform var(--transition-base);
+}
+
+.showcase__video-frame-wrap:hover,
+.showcase__video-frame-wrap:focus-visible {
+  transform: translateY(-2px);
+}
+
+.showcase__video-iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* The frame is thickest on the left and right edges (the blue corners). Let's squeeze the width a bit more. */
+  width: calc(100% - 6.5%);
+  height: calc(100% - 4%);
+  z-index: 1;
+  /* Sits underneath the frame */
+  border-radius: 0px;
+  /* Slight rounding to fit frame */
+  pointer-events: none;
+  /* Prevents iframe from capturing clicks meant for the popup trigger */
+}
+
+.showcase__video-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
+  /* Sits on top of the future video */
+}
+
+.showcase__actions {
+  display: flex;
+  justify-content: center;
+  gap: 0px;
+  flex-wrap: wrap;
+  /* Allows wrapping on smaller screens */
+  padding-inline: 24px;
+}
+
+.showcase__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--transition-base);
+}
+
+.showcase__btn:hover,
+.showcase__btn:focus-visible {
+  transform: translateY(-2px);
+}
+
+.showcase__btn-default,
+.showcase__btn-hover {
+  display: block;
+  width: auto;
+  height: auto;
+  /* Making sure the buttons scale well on mobile */
+  max-width: 100%;
+}
+
+.showcase__btn-hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.showcase__btn:hover .showcase__btn-hover,
+.showcase__btn:focus-visible .showcase__btn-hover {
+  opacity: 1;
+}
+
+.showcase__btn-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ff-heading);
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFF2B2;
+  text-shadow: 0 0 12px rgba(255, 242, 178, 0.2);
+  pointer-events: none;
+  transform: translateY(2px);
+  /* Adjusted for smaller text */
+  text-align: center;
+  padding-inline: 16px;
+}
+
+.showcase__btn--secondary .showcase__btn-text {
+  color: #40434F;
+  text-shadow: none;
+  /* Secondary button likely doesn't need the yellow glow */
+}
+
+/* Custom text color for the secondary button if needed, but the audio didn't specify. Assuming same style. */
 
 .section--features {
   margin-top: 120px;
@@ -1005,6 +1334,194 @@ p+p {
   opacity: 0.32;
 }
 
+
+
+/* ═══════════════════════════════════════════
+   Footer Section
+   ═══════════════════════════════════════════ */
+
+.footer {
+  position: relative;
+  width: 100%;
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-image: url('../img/footer.svg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  gap: 24px;
+  position: relative;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+}
+
+/* Left and Right column shared styling */
+.footer__title,
+.footer__text,
+.footer__link {
+  font-family: var(--ff-comfortaa);
+  font-size: 14px;
+  line-height: 18px;
+  color: #FFFFFF;
+  margin: 0;
+  display: block;
+}
+
+.footer__title {
+  margin-bottom: 4px;
+}
+
+.footer__link {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-underline-offset: 4px;
+  transition: color var(--transition-base), text-decoration-color var(--transition-base);
+}
+
+.footer__link:hover,
+.footer__link:focus-visible {
+  color: #FFF1B2;
+  text-decoration-color: #FFF1B2;
+}
+
+/* Center column — centered relative to screen, not between left/right */
+.footer__col--center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  gap: 12px;
+  height: auto;
+}
+
+.footer__server-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--ff-comfortaa);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.footer__info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer__info-label {
+  font-family: var(--ff-comfortaa);
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.footer__info-ip {
+  font-family: var(--ff-heading);
+  font-size: 16px;
+  color: #FFFFFF;
+  letter-spacing: 0.05em;
+}
+
+/* Footer copy group — mirrors header copy-group */
+.footer__copy-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.footer__copy-group:hover,
+.footer__copy-group:focus-visible {
+  opacity: 0.8;
+}
+
+.footer__tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  font-family: var(--ff-comfortaa);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+}
+
+.footer__tooltip.is-active {
+  opacity: 1;
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer__socials-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.footer__socials-link:hover,
+.footer__socials-link:focus-visible {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footer {
+    height: auto;
+    padding: 32px 0;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 32px;
+  }
+
+  .footer__col {
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer__server-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 .world__team-group--clone {
   display: none;
 
@@ -1365,43 +1882,6 @@ p+p {
   }
 }
 
-.footer {
-  background-color: var(--clr-bg-alt);
-  height: 72px;
-  display: flex;
-  align-items: center;
-}
-
-.footer__inner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.footer__socials {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.footer__socials-text {
-  font-family: 'Roboto Condensed', sans-serif;
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--clr-text-muted);
-}
-
-.footer__socials-link {
-  display: inline-flex;
-  transition: opacity 0.3s ease;
-}
-
-.footer__socials-link:hover,
-.footer__socials-link:focus-visible {
-  opacity: 0.7;
-}
 
 .sr-only {
   position: absolute;
@@ -1528,10 +2008,12 @@ p+p {
     opacity: 1;
     transform: translate(-50%, -50%) scale(0) rotate(0deg);
   }
+
   20% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.5) rotate(45deg);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, calc(-50% + 40px)) scale(0) rotate(135deg);

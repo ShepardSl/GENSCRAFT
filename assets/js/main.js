@@ -8,18 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initVideoModal();
   initPreregModal();
-  initSidorEasterEgg();
   initCopyIpButton();
 
   if (!prefersReducedMotion) {
     initMagicalCursor();
-    initTileHoverDistortion();
-    initScrollReveal();
-  } else {
-    // Сразу показываем тайлы без анимации
-    document.querySelectorAll('.features__tile').forEach(tile => {
-      tile.classList.add('is-revealed');
-    });
   }
 });
 
@@ -49,6 +41,22 @@ function initVideoModal() {
       content.focus();
     });
   });
+
+  // Attach popup logic for the new showcase video frame
+  const showcaseVideoBtn = document.getElementById('btnPlayVideoShowcase');
+  if (showcaseVideoBtn) {
+    showcaseVideoBtn.addEventListener('click', () => {
+      triggerBtn = showcaseVideoBtn;
+      // Using the exact parameters the user provided for the showcase video popup
+      iframe.src = `https://www.youtube.com/embed/I1KXdUwulKQ?si=r2SdHZzC4DVh2TmC&autoplay=1`;
+
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      content.focus();
+    });
+  }
 
   function closeModal() {
     modal.classList.remove('is-open');
@@ -109,24 +117,46 @@ function initPreregModal() {
 
 function initCopyIpButton() {
   const copyGroup = document.getElementById('btnCopyIp');
-  if (!copyGroup) return;
 
-  const ipValue = copyGroup.querySelector('.desktop-header__ip-value');
-  const tooltip = copyGroup.querySelector('.desktop-header__tooltip');
-  
-  if (!ipValue || !tooltip) return;
-
-  copyGroup.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(ipValue.textContent.trim());
-      tooltip.classList.add('is-active');
-      setTimeout(() => {
-        tooltip.classList.remove('is-active');
-      }, 2000);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
+  if (copyGroup) {
+    const ipValue = copyGroup.querySelector('.desktop-header__ip-value');
+    const tooltip = copyGroup.querySelector('.desktop-header__tooltip');
+    
+    if (ipValue && tooltip) {
+      copyGroup.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(ipValue.textContent.trim());
+          tooltip.classList.add('is-active');
+          setTimeout(() => {
+            tooltip.classList.remove('is-active');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+      });
     }
-  });
+  }
+
+  const copyFooterGroup = document.getElementById('btnCopyIpFooter');
+
+  if (copyFooterGroup) {
+    const footerIpValue = copyFooterGroup.querySelector('.footer__info-ip');
+    const footerTooltip = copyFooterGroup.querySelector('.footer__tooltip');
+    
+    if (footerIpValue && footerTooltip) {
+      copyFooterGroup.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(footerIpValue.textContent.trim());
+          footerTooltip.classList.add('is-active');
+          setTimeout(() => {
+            footerTooltip.classList.remove('is-active');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy: ', err);
+        }
+      });
+    }
+  }
 }
 
 function initMagicalCursor() {
@@ -210,173 +240,5 @@ function initSmoothScroll() {
   });
 }
 
-function initTileHoverDistortion() {
-  const tiles = document.querySelectorAll('.features__tile');
-  const svgDefs = document.querySelector('svg.sr-only defs');
-  if (!tiles.length || !svgDefs) return;
 
-  const maxScale = 35;
-
-  tiles.forEach((tile, index) => {
-    const img = tile.querySelector('.features__tile-img');
-    const filterId = `distort-tile-hover-${index}`;
-    const mapId = `displacement-hover-${index}`;
-
-    const filterHTML = `
-      <filter id="${filterId}" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1" result="noise" />
-        <feDisplacementMap id="${mapId}" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    `;
-    svgDefs.insertAdjacentHTML('beforeend', filterHTML);
-
-    const displacementMap = document.getElementById(mapId);
-
-    img.style.filter = '';
-
-    let isHovered = false;
-    let currentScale = 0;
-    let animationFrame;
-
-    const animate = () => {
-      const targetScale = isHovered ? maxScale : 0;
-
-      if (isHovered && img.style.filter === '') {
-        img.style.filter = `url(#${filterId})`;
-      }
-
-      currentScale += (targetScale - currentScale) * (isHovered ? 0.015 : 0.01);
-
-      displacementMap.setAttribute('scale', currentScale);
-
-      if (Math.abs(targetScale - currentScale) > 0.1) {
-        animationFrame = requestAnimationFrame(animate);
-      } else {
-        displacementMap.setAttribute('scale', targetScale);
-
-        if (!isHovered) {
-          img.style.filter = '';
-        }
-      }
-    };
-
-    tile.addEventListener('mouseenter', () => {
-      isHovered = true;
-      cancelAnimationFrame(animationFrame);
-      animate();
-    });
-
-    tile.addEventListener('mouseleave', () => {
-      isHovered = false;
-      cancelAnimationFrame(animationFrame);
-      animate();
-    });
-  });
-}
-
-function initScrollReveal() {
-  const tiles = document.querySelectorAll('.features__tile');
-  const svgDefs = document.querySelector('svg.sr-only defs');
-  if (!tiles.length || !svgDefs) return;
-
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.15
-  };
-
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const tile = entry.target;
-        const index = Array.from(tiles).indexOf(tile);
-        const delay = index * 150;
-
-        const filterId = `distort-reveal-${index}`;
-        const mapId = `displacement-reveal-${index}`;
-
-        const filterHTML = `
-          <filter id="${filterId}" color-interpolation-filters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.15" numOctaves="1" result="noise" />
-            <feDisplacementMap id="${mapId}" in="SourceGraphic" in2="noise" scale="150" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        `;
-        svgDefs.insertAdjacentHTML('beforeend', filterHTML);
-
-        const displacementMap = document.getElementById(mapId);
-
-        setTimeout(() => {
-
-          tile.style.filter = `url(#${filterId})`;
-          tile.classList.add('is-revealed');
-
-          let currentScale = 150;
-          let animationFrame;
-
-          const animateReveal = () => {
-
-            currentScale += (0 - currentScale) * 0.02;
-            displacementMap.setAttribute('scale', currentScale);
-
-            if (currentScale > 0.5) {
-              animationFrame = requestAnimationFrame(animateReveal);
-            } else {
-              displacementMap.setAttribute('scale', 0);
-              tile.style.filter = '';
-            }
-          };
-
-          animateReveal();
-        }, delay);
-
-        observer.unobserve(tile);
-      }
-    });
-  }, observerOptions);
-
-  tiles.forEach(tile => {
-    observer.observe(tile);
-  });
-}
-
-function initSidorEasterEgg() {
-  const egg = document.getElementById('sidorEasterEgg');
-  const footer = document.getElementById('footer');
-  if (!egg || !footer) return;
-
-  if (sessionStorage.getItem('sidorShown')) {
-    egg.remove();
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries, observerObj) => {
-    entries.forEach(entry => {
-
-      if (entry.isIntersecting) {
-
-        setTimeout(() => {
-          egg.classList.add('is-visible');
-          egg.setAttribute('aria-hidden', 'false');
-          sessionStorage.setItem('sidorShown', 'true');
-        }, 500);
-
-        setTimeout(() => {
-          egg.classList.remove('is-visible');
-          egg.setAttribute('aria-hidden', 'true');
-
-          setTimeout(() => {
-            egg.remove();
-          }, 1000);
-        }, 4500);
-
-        observerObj.unobserve(footer);
-      }
-    });
-  }, {
-    root: null,
-    threshold: 0.1
-  });
-
-  observer.observe(footer);
-}
 
