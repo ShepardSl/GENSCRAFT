@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMagicalCursor();
   initSmoothScroll();
   initScrollReveal();
+  initSuccessModal();
 });
 
 /**
@@ -116,6 +117,70 @@ function initModal(modalId, openSelectors) {
 
     amountInput.addEventListener('input', updateCurrencyVisibility);
     updateCurrencyVisibility();
+  }
+}
+
+/**
+ * Success modal — opens after form submission, closes payment modal first
+ */
+function initSuccessModal() {
+  const successModal = document.getElementById('successModal');
+  if (!successModal) return;
+
+  const content = successModal.querySelector('.prereg-modal__content');
+  const overlay = successModal.querySelector('.prereg-modal__overlay');
+  const closeBtn = successModal.querySelector('.prereg-modal__close');
+  const okBtn = document.getElementById('btnSuccessOk');
+
+  function openSuccess() {
+    successModal.classList.add('is-open');
+    successModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (content) content.focus();
+  }
+
+  function closeSuccess() {
+    successModal.classList.remove('is-open');
+    successModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', closeSuccess);
+  if (overlay) overlay.addEventListener('click', closeSuccess);
+  if (okBtn) okBtn.addEventListener('click', closeSuccess);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && successModal.classList.contains('is-open')) {
+      closeSuccess();
+    }
+  });
+
+  // Close the parent payment modal and show success
+  function closeParentAndShowSuccess(parentModalId) {
+    const parentModal = document.getElementById(parentModalId);
+    if (parentModal) {
+      parentModal.classList.remove('is-open');
+      parentModal.setAttribute('aria-hidden', 'true');
+    }
+    openSuccess();
+  }
+
+  // Wire up donation form
+  const donationForm = document.getElementById('donationForm');
+  if (donationForm) {
+    donationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      closeParentAndShowSuccess('donationModal');
+    });
+  }
+
+  // Wire up pass form
+  const passForm = document.getElementById('passForm');
+  if (passForm) {
+    passForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      closeParentAndShowSuccess('passModal');
+    });
   }
 }
 

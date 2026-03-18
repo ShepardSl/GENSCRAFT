@@ -1223,6 +1223,10 @@ p+p {
     flex-direction: column;
     gap: 8px;
   }
+
+  .footer__payment-logos {
+    justify-content: center;
+  }
 }
 
 .footer__col {
@@ -1260,6 +1264,22 @@ p+p {
 .footer__link:focus-visible {
   color: #FFF1B2;
   text-decoration-color: #FFF1B2;
+}
+
+.footer__payment-logos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.footer__payment-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  background-color: #FFFFFF;
+  padding: 4px 6px;
+  border-radius: 4px;
 }
 
 /* Center column — centered relative to screen, not between left/right */
@@ -1656,6 +1676,19 @@ p+p {
 
 .donation-form__submit {
   transform: translateY(0);
+}
+
+/* Success Modal Styles */
+.prereg-modal__inner--success {
+  padding-block: 40px;
+}
+
+.success-icon {
+  margin-bottom: 24px;
+}
+
+.success-modal__btn {
+  margin-top: 32px;
 }
 
 .donation-form__submit .showcase__btn-text {
