@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'GenshinFont';
-  src: url('../fonts/zhcn.ttf') format('truetype');
+  src: url('../fonts/zhcn.woff2') format('woff2'),
+       url('../fonts/zhcn.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -956,7 +957,7 @@ p+p {
   content: "";
   position: absolute;
   inset: 0;
-  background: url('../img/render-bg.png') center / cover no-repeat;
+  background: url('../img/render-bg.webp') center / cover no-repeat;
   z-index: -2;
   animation: showcaseZoom 20s ease-in-out infinite alternate;
   will-change: transform;
